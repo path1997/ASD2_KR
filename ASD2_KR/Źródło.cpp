@@ -1,49 +1,61 @@
 #include<iostream>
 #include<string>
 #include <fstream>
-#include <unordered_set> 
+#include <functional>
 
 class KR {
 public:
-	std::string fraza="",nazwa_pliku,calosc="";
-	char znak;
-	int przypadki,il_ident_liter;
-	std::fstream plik;
-	std::unordered_set<char> litery;
+	std::string fraza="",nazwa_pliku,calosc="",temp="";
+	int przypadki,r_fraza,r_calosc;
+	unsigned long long int hash_fraza, hash_czesc;
+	std::ifstream plik;
+	std::hash < std::string > haszujTekst;
 	
 
 	void start() {
 		std::cin >> przypadki;
 		for (int i = 0; i < przypadki; i++) {
 			std::cin >> nazwa_pliku;
-			std::cin >> fraza;
+			std::cin.ignore();
+			std::getline(std::cin, fraza);
 			plik.open(nazwa_pliku, std::ios::in);
 			if (plik.good() == true)
 			{
 				while (!plik.eof())
 				{
-					plik >> znak;
-					litery.insert(znak);
-					calosc +=znak;
+					std::getline(plik, temp);
+					calosc += temp;
 				}
 				plik.close();
+				temp = "";
 			}
-			//std::cout << calosc << std::endl;
-			il_ident_liter = litery.size();
-			//std::cout << il_ident_liter;
-			char * tablica = new char[il_ident_liter];
-
-			std::cout << "myset contains:";
-			for (std::unordered_set<int>::iterator it =0; it < il_ident_liter; ++it)
-				std::cout << ' ' << *it;
-
+			
+			hash_fraza = haszujTekst(fraza);
+			r_fraza = fraza.length();
+			r_calosc = calosc.length();
+			for (int j = 0; j < r_calosc - r_fraza; j++) {
+				for (int k = j; k < j + r_fraza; k++) {
+					temp += calosc[k];
+				}
+				hash_czesc= haszujTekst(temp);
+				if (hash_czesc == hash_fraza) {
+					if (temp == fraza) {
+						std::cout << j << " ";
+					}
+				}
+				temp = "";
+			}
+			std::cout << std::endl;
 			calosc = "";
-			litery.clear();
 		}
+		/*char d = 'e';
+		char f = 'ê';
+		std::cout << (int)d << " " << (int)f;*/
 	}
 };
 
 int main() {
+	setlocale(LC_ALL, "");
 	KR k;
 	k.start();
 	return 0;
