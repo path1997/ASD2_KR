@@ -48,9 +48,6 @@ public:
 			std::cout << std::endl;
 			calosc = "";
 		}
-		/*char d = 'e';
-		char f = 'ê';
-		std::cout << (int)d << " " << (int)f;*/
 	}
 };
 
